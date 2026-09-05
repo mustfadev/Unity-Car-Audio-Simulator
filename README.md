@@ -27,7 +27,7 @@ An ultra-clean, monochrome (black & white) web simulator designed to test car en
 
 1. Clone or download this repository:
    ```bash
-   git clone https://github.com/your-username/unity-car-audio-tester.git
+   git clone https://github.com/mustfadev/Unity-Car-Audio-Simulator.git
    ```
 2. Simply double-click `index.html` to open it in any modern web browser (Chrome, Edge, Firefox, Safari).
 3. Press **SPACE** or click **ENGINE START / STOP** to start the engine.
