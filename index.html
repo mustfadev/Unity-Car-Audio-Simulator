@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unity Car Audio & Throttle Simulator | RPM & Audio Loop Tester</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@600;800;900&family=Cairo:wght@600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header: Title, Language Switcher, Ignition -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="car-badge">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.7 2 11 2 11.3V16c0 .6.4 1 1 1h2"/>
+            <circle cx="7" cy="17" r="2"/>
+            <path d="M9 17h6"/>
+            <circle cx="17" cy="17" r="2"/>
+          </svg>
+        </div>
+        <div>
+          <div class="title-row">
+            <h1 data-i18n="appTitle">Unity Car Audio Simulator</h1>
+            <span class="version-tag">v2.0 GitHub Ready</span>
+          </div>
+          <p class="subtitle" data-i18n="appSubtitle">Gas Pedal Physics, RPM Pitch Modulation & Audio Loop Tester for Unity</p>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <!-- Language Switcher -->
+        <div class="lang-switcher">
+          <button class="lang-btn active" id="btnLangEn" data-lang="en">EN</button>
+          <button class="lang-btn" id="btnLangAr" data-lang="ar">العربية</button>
+        </div>
+
+        <!-- Engine Status -->
+        <div class="engine-status-tag" id="engineStatusTag">
+          <span class="status-dot"></span>
+          <span id="engineStatusText" data-i18n="engineOff">ENGINE OFF</span>
+        </div>
+        
+        <!-- Ignition Start / Stop Button -->
+        <button id="ignitionBtn" class="ignition-button" title="Start/Stop Engine (Spacebar)">
+          <div class="engine-start-ring"></div>
+          <span class="ignition-text" data-i18n="ignitionBtn">ENGINE<br>START / STOP</span>
+          <span class="ignition-subtext" data-i18n="spaceHint">[SPACE]</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Grid -->
+    <main class="dashboard-grid">
+      
+      <!-- Left Column: Tachometer & Realtime Telemetry -->
+      <section class="card gauge-card">
+        <div class="card-header">
+          <h2 data-i18n="tachoTitle">RPM Tachometer & Telemetry</h2>
+          <div class="badge redline-badge" id="limiterIndicator" data-i18n="limiterBadge">REV LIMITER</div>
+        </div>
+
+        <!-- Unity Project Preset Bar -->
+        <div class="project-preset-bar">
+          <label for="projectPresetSelect" data-i18n="formulaLabel">Applied Audio Formula:</label>
+          <select id="projectPresetSelect">
+            <option value="networkVehicle" selected data-i18n="presetNetworkVehicle">Your Project: NetworkVehicleController.cs (0.55x - 2.8x)</option>
+            <option value="msAdapter" data-i18n="presetMsAdapter">Your Project: MSNetworkVehicleAdapter.cs (Exponential Smooth)</option>
+            <option value="standardRpm" data-i18n="presetStandard">Standard Unity RPM Pitch Lerp</option>
+          </select>
+        </div>
+
+        <!-- Gauge Canvas & Center Readout -->
+        <div class="tachometer-wrapper">
+          <canvas id="tachometerCanvas" width="400" height="400"></canvas>
+          <div class="gauge-center-info">
+            <span class="digital-gear" id="currentGear">N</span>
+            <span class="digital-rpm" id="digitalRpm">0</span>
+            <span class="rpm-label">RPM</span>
+          </div>
+        </div>
+
+        <!-- Live Unity AudioSource Telemetry -->
+        <div class="unity-telemetry-box">
+          <div class="telemetry-header">
+            <span data-i18n="telemetryTitle">Live Unity AudioSource Values:</span>
+            <span class="tag live-tag">LIVE SYNC</span>
+          </div>
+          <div class="telemetry-values">
+            <div class="metric">
+              <span class="metric-name">AudioSource.pitch:</span>
+              <span class="metric-val highlight" id="livePitchVal">0.55x</span>
+            </div>
+            <div class="metric">
+              <span class="metric-name">AudioSource.volume:</span>
+              <span class="metric-val" id="liveVolumeVal">0.12</span>
+            </div>
+            <div class="metric">
+              <span class="metric-name" data-i18n="throttleInput">Throttle Input:</span>
+              <span class="metric-val" id="liveThrottleVal">0%</span>
+            </div>
+            <div class="metric">
+              <span class="metric-name" data-i18n="simSpeed">Simulated Speed:</span>
+              <span class="metric-val" id="liveSpeedVal">0 km/h</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Waveform Visualizer -->
+        <div class="visualizer-container">
+          <div class="visualizer-header">
+            <span data-i18n="visualizerTitle">Audio Waveform & Loop Continuity</span>
+            <span class="mono-badge" id="loopStatusBadge" data-i18n="loopReady">Loop: Ready for MP3/WAV</span>
+          </div>
+          <canvas id="visualizerCanvas" width="400" height="70"></canvas>
+        </div>
+      </section>
+
+      <!-- Center Column: Interactive Monochrome Gas Pedal -->
+      <section class="card pedal-card" id="pedalDropZone">
+        <div class="card-header">
+          <h2 data-i18n="pedalTitle">Interactive Gas Pedal</h2>
+          <span class="keyboard-hint" data-i18n="pedalHint">Hold <b>W</b>, <b>↑</b> or Click & Drag</span>
+        </div>
+
+        <!-- Drag & Drop Hint Banner -->
+        <div class="drop-hint-banner" data-i18n="dropHint">
+          📁 Drag & Drop any <b>MP3</b> or <b>WAV</b> file directly here to test!
+        </div>
+
+        <!-- 3D Pedal Chamber -->
+        <div class="pedal-chamber">
+          <div class="pedal-assembly" id="pedalAssembly">
+            <div class="pedal-arm"></div>
+            <div class="pedal-footplate" id="pedalFootplate">
+              <div class="pedal-texture">
+                <div class="rubber-groove"></div>
+                <div class="rubber-groove"></div>
+                <div class="rubber-groove"></div>
+                <div class="rubber-groove"></div>
+                <div class="rubber-groove"></div>
+                <div class="rubber-groove"></div>
+              </div>
+              <div class="pedal-label">THROTTLE</div>
+              <div class="pedal-press-hint" data-i18n="pedalPress">Click or Hold W to Rev</div>
+            </div>
+          </div>
+
+          <!-- Vertical Level Track -->
+          <div class="pedal-track-gauge">
+            <div class="pedal-level-fill" id="pedalFill"></div>
+            <span class="pedal-level-text" id="pedalPercent">0%</span>
+          </div>
+        </div>
+
+        <!-- Precise Slider -->
+        <div class="pedal-slider-group">
+          <label for="throttleRange" data-i18n="preciseThrottle">Throttle Level Slider:</label>
+          <div class="slider-with-val">
+            <input type="range" id="throttleRange" min="0" max="100" value="0" step="1">
+            <span id="sliderValDisplay">0%</span>
+          </div>
+        </div>
+
+        <!-- Rev Mode Toggles -->
+        <div class="mode-toggles">
+          <button class="mode-btn active" id="btnNeutral" data-i18n="modeNeutral">Neutral Revving</button>
+          <button class="mode-btn" id="btnDrive" data-i18n="modeDrive">Drive Gear Mode</button>
+        </div>
+      </section>
+
+      <!-- Right Column: Audio Files & Calibration -->
+      <section class="card audio-card">
+        <div class="card-header">
+          <h2 data-i18n="audioConfigTitle">Audio Setup & Tuning</h2>
+          <div class="sound-mode-switch">
+            <button class="tab-btn active" id="tabCustomAudio" data-i18n="tabCustom">MP3 / WAV Files</button>
+            <button class="tab-btn" id="tabSynth" data-i18n="tabSynth">Built-in Synth</button>
+          </div>
+        </div>
+
+        <!-- Custom Audio Panel -->
+        <div id="customAudioPanel" class="audio-panel active">
+          <p class="section-desc" data-i18n="audioDesc">
+            Load your car sound clips to test loops and pitch variation. Touching the pedal automatically starts playback:
+          </p>
+
+          <div class="audio-slots-list">
+            <!-- Slot 1: Accel / Primary Loop -->
+            <div class="audio-slot" id="slotAccel">
+              <div class="slot-info">
+                <div class="slot-title">
+                  <span class="slot-icon">⚡</span>
+                  <strong data-i18n="slotAccelTitle">Engine Accel / Primary Loop</strong>
+                  <span class="badge primary-badge">MP3 / WAV</span>
+                </div>
+                <div class="slot-file-name" id="accelFileName" data-i18n="accelFilePlaceholder">Drop an MP3 here or click Browse</div>
+              </div>
+              <div class="slot-actions">
+                <label class="file-upload-label">
+                  <span data-i18n="browseBtn">Browse</span>
+                  <input type="file" id="accelFileInput" accept=".mp3,.wav,.ogg,.m4a,.aac,audio/*">
+                </label>
+                <button class="mini-btn" id="testAccelLoopBtn" title="Test seamless looping continuously" data-i18n="testLoopBtn">Test Loop</button>
+              </div>
+            </div>
+
+            <!-- Slot 2: Idle Loop -->
+            <div class="audio-slot" id="slotIdle">
+              <div class="slot-info">
+                <div class="slot-title">
+                  <span class="slot-icon">💤</span>
+                  <strong data-i18n="slotIdleTitle">Idle Loop (Optional)</strong>
+                  <span class="badge optional-badge" data-i18n="crossfadeBadge">Crossfade</span>
+                </div>
+                <div class="slot-file-name" id="idleFileName" data-i18n="idleFilePlaceholder">Plays at zero throttle (Optional)</div>
+              </div>
+              <div class="slot-actions">
+                <label class="file-upload-label">
+                  <span data-i18n="browseBtn">Browse</span>
+                  <input type="file" id="idleFileInput" accept=".mp3,.wav,.ogg,.m4a,.aac,audio/*">
+                </label>
+              </div>
+            </div>
+
+            <!-- Slot 3: Ignition Start -->
+            <div class="audio-slot" id="slotStart">
+              <div class="slot-info">
+                <div class="slot-title">
+                  <span class="slot-icon">🔑</span>
+                  <strong data-i18n="slotStartTitle">Engine Starter (One-Shot)</strong>
+                  <span class="badge optional-badge">One-Shot</span>
+                </div>
+                <div class="slot-file-name" id="startFileName" data-i18n="startFilePlaceholder">Plays on engine ignition (Optional)</div>
+              </div>
+              <div class="slot-actions">
+                <label class="file-upload-label">
+                  <span data-i18n="browseBtn">Browse</span>
+                  <input type="file" id="startFileInput" accept=".mp3,.wav,.ogg,.m4a,.aac,audio/*">
+                </label>
+              </div>
+            </div>
+
+            <!-- Slot 4: Backfire / Pop -->
+            <div class="audio-slot" id="slotPop">
+              <div class="slot-info">
+                <div class="slot-title">
+                  <span class="slot-icon">💥</span>
+                  <strong data-i18n="slotPopTitle">Exhaust Pop / Turbo Blowoff</strong>
+                  <span class="badge optional-badge" data-i18n="popBadge">Release</span>
+                </div>
+                <div class="slot-file-name" id="popFileName" data-i18n="popFilePlaceholder">Triggers on quick throttle release</div>
+              </div>
+              <div class="slot-actions">
+                <label class="file-upload-label">
+                  <span data-i18n="browseBtn">Browse</span>
+                  <input type="file" id="popFileInput" accept=".mp3,.wav,.ogg,.m4a,.aac,audio/*">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Synth Mode Panel -->
+        <div id="synthPanel" class="audio-panel">
+          <div class="synth-banner">
+            <h3 data-i18n="synthTitle">Procedural Engine Sound Synthesizer</h3>
+            <p data-i18n="synthDesc">Built-in Web Audio API engine generator that creates real multi-cylinder rumble and intake suction without any external audio files.</p>
+            <div class="synth-configs">
+              <label data-i18n="engineTone">Engine Configuration:</label>
+              <select id="synthToneSelect">
+                <option value="v6">V6 Sports Exhaust (Deep resonance)</option>
+                <option value="i4">Inline-4 Turbo (High revving)</option>
+                <option value="v8">V8 Muscle (Raw growl)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calibration Sliders -->
+        <div class="unity-calibration-section">
+          <div class="section-subheading">
+            <span data-i18n="unityCalibrationTitle">Unity Pitch & RPM Calibration</span>
+            <button class="copy-unity-code-btn" id="btnExportUnityCode" data-i18n="btnExportCode">📋 Export C# Script</button>
+          </div>
+
+          <div class="tuning-grid">
+            <div class="tune-field">
+              <label data-i18n="paramMinPitch">Min Pitch (Idle):</label>
+              <div class="slider-val-pair">
+                <input type="range" id="paramMinPitch" min="0.3" max="1.0" step="0.05" value="0.55">
+                <span id="paramMinPitchVal">0.55</span>
+              </div>
+            </div>
+
+            <div class="tune-field">
+              <label data-i18n="paramMaxPitch">Max Pitch (Redline):</label>
+              <div class="slider-val-pair">
+                <input type="range" id="paramMaxPitch" min="1.2" max="3.5" step="0.05" value="2.80">
+                <span id="paramMaxPitchVal">2.80</span>
+              </div>
+            </div>
+
+            <div class="tune-field">
+              <label data-i18n="paramIdleRpm">Idle RPM:</label>
+              <div class="slider-val-pair">
+                <input type="range" id="paramIdleRpm" min="500" max="1200" step="50" value="850">
+                <span id="paramIdleRpmVal">850</span>
+              </div>
+            </div>
+
+            <div class="tune-field">
+              <label data-i18n="paramMaxRpm">Redline RPM:</label>
+              <div class="slider-val-pair">
+                <input type="range" id="paramMaxRpm" min="5500" max="9500" step="100" value="7500">
+                <span id="paramMaxRpmVal">7500</span>
+              </div>
+            </div>
+
+            <div class="tune-field">
+              <label data-i18n="paramAttack">RPM Attack (Rev Speed):</label>
+              <div class="slider-val-pair">
+                <input type="range" id="paramAttack" min="2" max="15" step="0.5" value="8.0">
+                <span id="paramAttackVal">8.0</span>
+              </div>
+            </div>
+
+            <div class="tune-field">
+              <label data-i18n="paramDecay">RPM Decay (Engine Brake):</label>
+              <div class="slider-val-pair">
+                <input type="range" id="paramDecay" min="2" max="12" step="0.5" value="5.0">
+                <span id="paramDecayVal">5.0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Unity C# Code Modal -->
+    <div class="modal-overlay" id="unityCodeModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 data-i18n="modalTitle">Ready-to-Use Unity C# Script</h3>
+          <button class="close-modal-btn" id="btnCloseModal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p data-i18n="modalDesc">Copy and paste this script directly onto your car GameObject in Unity:</p>
+          <pre><code id="unityCodeSnippet"></code></pre>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-primary" id="btnCopySnippet" data-i18n="copyCodeBtn">Copy Code to Clipboard</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div>
+        <span data-i18n="footerText">Unity Car Audio & Throttle Simulator | Open Source & GitHub Ready</span>
+      </div>
+      <div class="shortcuts-legend">
+        <span><b data-i18n="keyW">W</b> or <b>↑</b> = <span data-i18n="keyThrottle">Throttle</span></span>
+        <span><b>SPACE</b> = <span data-i18n="keyIgnition">Ignition</span></span>
+        <span><b>L</b> = <span data-i18n="keyLoop">Test Loop</span></span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="audio-engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
