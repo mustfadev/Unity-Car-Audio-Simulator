@@ -1,0 +1,2170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استوديو قص ولوب صوت المحرك الاحترافي | Pro Engine Audio Loop Trimmer</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-base: #08090d;
+      --bg-card: #12131a;
+      --bg-card-subtle: #171822;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(0, 245, 196, 0.4);
+      --fg-primary: #ffffff;
+      --fg-secondary: #9ea3b5;
+      --fg-muted: #606474;
+      
+      --accent-cyan: #00f5c4;
+      --accent-cyan-glow: rgba(0, 245, 196, 0.35);
+      --accent-orange: #ff7b00;
+      --accent-orange-glow: rgba(255, 123, 0, 0.35);
+      --accent-red: #ff334b;
+      --accent-purple: #8a2be2;
+      --accent-green: #10b981;
+      
+      --font-arabic: 'Cairo', system-ui, sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+      --font-gauge: 'Orbitron', monospace;
+      --font-sans: 'Inter', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 245, 196, 0.04) 0%, transparent 60%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+      color: var(--fg-primary);
+      font-family: var(--font-arabic);
+      min-height: 100vh;
+      direction: rtl;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Container */
+    .studio-container {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      flex: 1;
+    }
+
+    /* Header */
+    .studio-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #1c1d28, #12131a);
+      border: 1px solid rgba(0, 245, 196, 0.3);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-cyan);
+      box-shadow: 0 0 15px var(--accent-cyan-glow);
+    }
+
+    .brand-text h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--fg-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .brand-badge {
+      font-size: 0.65rem;
+      font-family: var(--font-code);
+      background: rgba(0, 245, 196, 0.12);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 245, 196, 0.3);
+      padding: 2px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-text p {
+      font-size: 0.85rem;
+      color: var(--fg-secondary);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-nav {
+      background: #191a24;
+      border: 1px solid var(--border-subtle);
+      color: var(--fg-primary);
+      padding: 0.6rem 1.1rem;
+      border-radius: 8px;
+      font-family: var(--font-arabic);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav:hover {
+      background: #232432;
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    /* Grid Layout */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .studio-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .card-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--fg-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* File Drop Zone */
+    .dropzone {
+      border: 2px dashed rgba(255, 255, 255, 0.12);
+      background: var(--bg-card-subtle);
+      border-radius: 12px;
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .dropzone:hover, .dropzone.drag-active {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 245, 196, 0.03);
+      box-shadow: 0 0 20px rgba(0, 245, 196, 0.1);
+    }
+
+    .dropzone input {
+      display: none;
+    }
+
+    .dropzone-icon {
+      color: var(--accent-cyan);
+      margin-bottom: 0.6rem;
+    }
+
+    .dropzone-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .dropzone-hint {
+      font-size: 0.8rem;
+      color: var(--fg-secondary);
+      margin-bottom: 0.8rem;
+    }
+
+    .btn-demo-sound {
+      background: rgba(255, 123, 0, 0.15);
+      border: 1px solid rgba(255, 123, 0, 0.4);
+      color: #ff9838;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-demo-sound:hover {
+      background: rgba(255, 123, 0, 0.25);
+      border-color: var(--accent-orange);
+      transform: translateY(-1px);
+    }
+
+    /* Track Meta Readout */
+    .track-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+      background: #0d0e14;
+      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      color: var(--fg-secondary);
+    }
+
+    .track-meta span strong {
+      color: var(--fg-primary);
+    }
+
+    /* Waveform Section */
+    .waveform-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .canvas-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tool-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #0d0e14;
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .tool-btn {
+      background: transparent;
+      border: none;
+      color: var(--fg-secondary);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-family: var(--font-code);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .tool-btn:hover, .tool-btn.active {
+      background: #1c1d29;
+      color: var(--accent-cyan);
+    }
+
+    /* Mini-Map Canvas */
+    .minimap-wrapper {
+      position: relative;
+      width: 100%;
+      height: 44px;
+      background: #0b0c12;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    #minimapCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .minimap-view-window {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 245, 196, 0.08);
+      border-left: 2px solid var(--accent-cyan);
+      border-right: 2px solid var(--accent-cyan);
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    /* Main Canvas Stage */
+    .waveform-stage {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      background: #08090e;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    #waveformCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Selection & Handles Overlay */
+    .loop-region-overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: rgba(0, 245, 196, 0.08);
+      pointer-events: none;
+      border-top: 1px solid rgba(0, 245, 196, 0.3);
+      border-bottom: 1px solid rgba(0, 245, 196, 0.3);
+      z-index: 5;
+    }
+
+    .handle-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      z-index: 10;
+      pointer-events: all;
+      cursor: ew-resize;
+    }
+
+    .handle-start {
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan);
+    }
+
+    .handle-end {
+      background: var(--accent-orange);
+      box-shadow: 0 0 10px var(--accent-orange);
+    }
+
+    .handle-grip {
+      position: absolute;
+      top: 6px;
+      transform: translateX(50%);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.65rem;
+      font-family: var(--font-code);
+      font-weight: 700;
+      color: #000;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      z-index: 12;
+      user-select: none;
+    }
+
+    .handle-start .handle-grip {
+      background: var(--accent-cyan);
+    }
+
+    .handle-end .handle-grip {
+      background: var(--accent-orange);
+    }
+
+    .playhead-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #ffffff;
+      box-shadow: 0 0 8px #ffffff;
+      z-index: 15;
+      pointer-events: none;
+      display: none;
+    }
+
+    /* Playback & RPM Test Bar */
+    .playback-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #0d0e15;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .transport-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-play-loop {
+      background: var(--accent-cyan);
+      color: #000;
+      border: none;
+      padding: 0.75rem 1.6rem;
+      border-radius: 10px;
+      font-family: var(--font-arabic);
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 0 20px var(--accent-cyan-glow);
+      transition: all 0.2s ease;
+    }
+
+    .btn-play-loop:hover {
+      transform: scale(1.03);
+      filter: brightness(1.1);
+    }
+
+    .btn-play-loop.playing {
+      background: var(--accent-red);
+      box-shadow: 0 0 20px rgba(255, 51, 75, 0.4);
+      color: #fff;
+    }
+
+    /* Loop Indicator Ping */
+    .loop-ping-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #171822;
+      border: 1px solid var(--border-subtle);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-family: var(--font-code);
+      color: var(--fg-secondary);
+    }
+
+    .ping-led {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #333644;
+      transition: all 0.1s;
+    }
+
+    .ping-led.flash {
+      background: var(--accent-cyan);
+      box-shadow: 0 0 12px var(--accent-cyan);
+      transform: scale(1.3);
+    }
+
+    /* RPM & Pitch Simulator */
+    .rpm-preview-box {
+      flex: 1;
+      min-width: 280px;
+      background: #14151f;
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+    }
+
+    .rpm-preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .rpm-preview-header span strong {
+      color: var(--accent-cyan);
+      font-family: var(--font-gauge);
+    }
+
+    .rpm-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .rpm-slider {
+      flex: 1;
+      accent-color: var(--accent-cyan);
+      cursor: pointer;
+      height: 6px;
+    }
+
+    .rpm-presets {
+      display: flex;
+      gap: 4px;
+      margin-top: 0.4rem;
+    }
+
+    .btn-rpm-preset {
+      background: #1c1d29;
+      border: 1px solid var(--border-subtle);
+      color: var(--fg-secondary);
+      font-size: 0.65rem;
+      font-family: var(--font-code);
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-rpm-preset:hover, .btn-rpm-preset.active {
+      background: rgba(0, 245, 196, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    /* Anti-Click Control Center */
+    .anticlick-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .feature-card {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .feature-toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider-toggle {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #262836;
+      transition: .2s;
+      border-radius: 22px;
+    }
+
+    .slider-toggle:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider-toggle {
+      background-color: var(--accent-cyan);
+    }
+
+    input:checked + .slider-toggle:before {
+      transform: translateX(18px);
+      background-color: #000;
+    }
+
+    .feature-desc {
+      font-size: 0.75rem;
+      color: var(--fg-secondary);
+      line-height: 1.4;
+    }
+
+    .range-control {
+      margin-top: 0.6rem;
+    }
+
+    .range-control-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--fg-muted);
+      margin-bottom: 0.3rem;
+      font-family: var(--font-code);
+    }
+
+    .range-control input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-cyan);
+      height: 5px;
+      cursor: pointer;
+    }
+
+    /* Telemetry readout table */
+    .telemetry-table {
+      width: 100%;
+      font-family: var(--font-code);
+      font-size: 0.75rem;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+
+    .telemetry-table td {
+      padding: 0.4rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--fg-secondary);
+    }
+
+    .telemetry-table td:last-child {
+      text-align: left;
+      direction: ltr;
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    /* Export Section */
+    .export-card {
+      margin-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .btn-export-wav {
+      background: linear-gradient(135deg, #00f5c4, #00b48f);
+      color: #000;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 10px;
+      font-family: var(--font-arabic);
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px var(--accent-cyan-glow);
+      transition: all 0.2s ease;
+    }
+
+    .btn-export-wav:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 245, 196, 0.5);
+    }
+
+    .btn-send-sim {
+      background: linear-gradient(135deg, #ff7b00, #e05e00);
+      color: #ffffff;
+      border: none;
+      padding: 0.85rem;
+      border-radius: 10px;
+      font-family: var(--font-arabic);
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px var(--accent-orange-glow);
+      transition: all 0.2s ease;
+    }
+
+    .btn-send-sim:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 123, 0, 0.5);
+    }
+
+    .status-toast {
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      text-align: center;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .status-toast.success {
+      display: block;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .status-toast.warn {
+      display: block;
+      background: rgba(255, 123, 0, 0.15);
+      border: 1px solid var(--accent-orange);
+      color: var(--accent-orange);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Zero-Crossing Indicator Toast */
+    .snap-indicator {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      background: rgba(0, 245, 196, 0.15);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      font-size: 0.65rem;
+      font-family: var(--font-code);
+      padding: 2px 8px;
+      border-radius: 4px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 20;
+    }
+
+    .snap-indicator.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="studio-container">
+    
+    <!-- Top Header -->
+    <header class="studio-header">
+      <div class="header-brand">
+        <div class="brand-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="6" cy="6" r="3"/>
+            <circle cx="6" cy="18" r="3"/>
+            <line x1="20" y1="4" x2="8.12" y2="15.88"/>
+            <line x1="14.47" y1="14.48" x2="20" y2="20"/>
+            <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>
+            استوديو قص ولوب صوت المحرك الاحترافي
+            <span class="brand-badge">Anti-Click v2.5</span>
+          </h1>
+          <p>Real-Time Engine Sound Trimmer & Click-Free Seamless Looper for Unity</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <a href="index.html" class="btn-nav" id="btnBackToSim">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          محاكي السيارة ودعسة البنزين
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Workspace Grid -->
+    <div class="studio-grid">
+      
+      <!-- Left Column: Waveform Studio & Realtime Playback -->
+      <main style="display: flex; flex-direction: column; gap: 1.25rem;">
+        
+        <!-- File Drop & Info Card -->
+        <section class="card">
+          <div class="dropzone" id="audioDropzone">
+            <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.ogg,.m4a,.flac">
+            <div class="dropzone-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <div class="dropzone-title">اسحب وأفلت ملف صوت المحرك (MP3, WAV, OGG) هنا</div>
+            <div class="dropzone-hint">أو اضغط للتصفح من جهازك — يتم الفحص والاقتطاع محلياً بدون رفع بيانات</div>
+            
+            <button type="button" class="btn-demo-sound" id="btnGenerateDemo">
+              ⚡ توليد صوت محرك تجريبي للاختبار الفوري
+            </button>
+          </div>
+
+          <div class="track-meta" id="trackMeta">
+            <span>الملف: <strong id="metaFileName">لم يتم اختيار ملف</strong></span>
+            <span>المدة الإجمالية: <strong id="metaDuration">--:--</strong></span>
+            <span>معدل العينة: <strong id="metaSampleRate">-- Hz</strong></span>
+            <span>القنوات: <strong id="metaChannels">--</strong></span>
+          </div>
+        </section>
+
+        <!-- Waveform Studio -->
+        <section class="card">
+          <div class="card-header">
+            <h2>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M2 12h2l3 7 4-14 4 14 3-7h2"/>
+              </svg>
+              مخطط الموجة الصوتي ومقابض التحديد
+            </h2>
+            
+            <!-- Canvas Toolbar: Zoom & View -->
+            <div class="canvas-toolbar">
+              <div class="tool-btn-group">
+                <button class="tool-btn" id="btnZoomOut" title="تصغير">🔍- تصغير</button>
+                <button class="tool-btn" id="btnZoomIn" title="تكبير">🔍+ تكبير</button>
+                <button class="tool-btn active" id="btnZoomFit" title="ملاءمة">ملء الشاشة</button>
+                <button class="tool-btn" id="btnZoomSelection" title="تكبير التحديد">توسيع اللوب</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="waveform-workspace">
+            <!-- Mini-Map Overview -->
+            <div class="minimap-wrapper" id="minimapWrapper" title="انقر أو اسحب للتنقل السريع">
+              <canvas id="minimapCanvas"></canvas>
+              <div class="minimap-view-window" id="minimapViewWindow"></div>
+            </div>
+
+            <!-- Main Zoomable Waveform Display -->
+            <div class="waveform-stage" id="waveformStage">
+              <canvas id="waveformCanvas"></canvas>
+              
+              <!-- Selection Area -->
+              <div class="loop-region-overlay" id="loopOverlay"></div>
+              
+              <!-- Start Handle -->
+              <div class="handle-line handle-start" id="handleStart" title="اسحب لضبط بداية اللوب">
+                <div class="handle-grip">
+                  <span>▶ بداية</span>
+                  <span id="startPosLabel">0.000s</span>
+                </div>
+              </div>
+
+              <!-- End Handle -->
+              <div class="handle-line handle-end" id="handleEnd" title="اسحب لضبط نهاية اللوب">
+                <div class="handle-grip">
+                  <span>نهاية ⏹</span>
+                  <span id="endPosLabel">0.000s</span>
+                </div>
+              </div>
+
+              <!-- Live Playhead -->
+              <div class="playhead-line" id="playheadLine"></div>
+
+              <!-- Snap to Zero Notification -->
+              <div class="snap-indicator" id="snapIndicator">✓ تم الالتصاق بالصفر (Zero-Cross Aligned)</div>
+            </div>
+          </div>
+
+          <!-- Playback & RPM Auditioning Controls -->
+          <div class="playback-bar">
+            
+            <!-- Transport Button -->
+            <div class="transport-controls">
+              <button class="btn-play-loop" id="btnPlayLoop">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" id="playIcon">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <span id="playBtnText">تشغيل اللوب المباشر</span>
+              </button>
+
+              <!-- Loop Flash / Ping -->
+              <div class="loop-ping-indicator" title="يومض تلقائياً عند كل دورة تكرار للوب">
+                <span class="ping-led" id="pingLed"></span>
+                <span>تكرار اللوب</span>
+              </div>
+            </div>
+
+            <!-- Realtime RPM & Pitch Modulator -->
+            <div class="rpm-preview-box">
+              <div class="rpm-preview-header">
+                <span>محاكي سرعة دوران المحرك (Real-Time RPM):</span>
+                <span><strong id="rpmValueDisplay">3,000 RPM</strong> (Pitch: <strong id="pitchValueDisplay">1.00x</strong>)</span>
+              </div>
+              <div class="rpm-slider-row">
+                <span style="font-size: 0.75rem; color: var(--fg-muted); font-family: var(--font-code);">0.5x</span>
+                <input type="range" class="rpm-slider" id="rpmPitchSlider" min="0.5" max="3.0" step="0.01" value="1.0">
+                <span style="font-size: 0.75rem; color: var(--fg-muted); font-family: var(--font-code);">3.0x</span>
+              </div>
+              <div class="rpm-presets">
+                <button class="btn-rpm-preset" data-pitch="0.75" data-rpm="850">خامل 850 RPM</button>
+                <button class="btn-rpm-preset active" data-pitch="1.0" data-rpm="3000">عادي 3000 RPM</button>
+                <button class="btn-rpm-preset" data-pitch="1.6" data-rpm="5200">تسارع 5200 RPM</button>
+                <button class="btn-rpm-preset" data-pitch="2.4" data-rpm="7500">قاطع 7500 RPM</button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Right Column: Anti-Click Engine & Export Center -->
+      <aside class="anticlick-panel">
+        
+        <!-- Anti-Click Control Center -->
+        <section class="card">
+          <div class="card-header">
+            <h2>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              نظام منع الطقطقة (Anti-Click)
+            </h2>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+            
+            <!-- 1. Zero-Crossing Snapper -->
+            <div class="feature-card">
+              <div class="feature-toggle-row">
+                <span class="feature-title">
+                  <span style="color: var(--accent-cyan);">⚡</span>
+                  محاذاة الصفر (Zero-Crossing)
+                </span>
+                <label class="switch">
+                  <input type="checkbox" id="toggleZeroCross" checked>
+                  <span class="slider-toggle"></span>
+                </label>
+              </div>
+              <p class="feature-desc">
+                يجبر نقاط البداية والنهاية على الالتصاق بنقطة انعدام الفولتية (0V) بنفس اتجاه صعود الموجة لمنع أي فرقعة ناتجة عن انقطاع العينة.
+              </p>
+            </div>
+
+            <!-- 2. Equal Power Crossfade -->
+            <div class="feature-card">
+              <div class="feature-toggle-row">
+                <span class="feature-title">
+                  <span style="color: var(--accent-orange);">🔀</span>
+                  الدمج المتساوي (Seamless Crossfade)
+                </span>
+                <label class="switch">
+                  <input type="checkbox" id="toggleCrossfade" checked>
+                  <span class="slider-toggle"></span>
+                </label>
+              </div>
+              <p class="feature-desc">
+                يدمج نهاية اللوب مع بدايته عبر منحنى تراكب جيبي (Equal-Power cos/sin)، مما يجعل تكرار صوت المحرك مستمراً وموحداً بنسبة 100% دون خفوت.
+              </p>
+              
+              <div class="range-control">
+                <div class="range-control-labels">
+                  <span>مدة الدمج التبادلي:</span>
+                  <span id="crossfadeValDisplay">40 ms</span>
+                </div>
+                <input type="range" id="crossfadeSlider" min="5" max="200" step="5" value="40">
+              </div>
+            </div>
+
+            <!-- 3. Micro De-Clicker -->
+            <div class="feature-card">
+              <div class="feature-toggle-row">
+                <span class="feature-title">
+                  <span style="color: var(--accent-green);">🛡️</span>
+                  تنعيم الحواف (Micro-Fade)
+                </span>
+                <label class="switch">
+                  <input type="checkbox" id="toggleMicroFade" checked>
+                  <span class="slider-toggle"></span>
+                </label>
+              </div>
+              <p class="feature-desc">
+                تطبيق غلاف تنعيم مجهري (2ms) عند أطراف العينة لإلغاء أي طفرة ترددية أو شحنة كامنة.
+              </p>
+            </div>
+
+            <!-- 4. DC Offset Filter -->
+            <div class="feature-card">
+              <div class="feature-toggle-row">
+                <span class="feature-title">
+                  <span style="color: #a78bfa;">⚖️</span>
+                  إزالة انحياز التيار (DC Offset)
+                </span>
+                <label class="switch">
+                  <input type="checkbox" id="toggleDCOffset" checked>
+                  <span class="slider-toggle"></span>
+                </label>
+              </div>
+              <p class="feature-desc">
+                توسيط سعة الموجة تلقائياً حول محور الصفر لمنع الصوت التراكمي في مكبرات الصوت.
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Telemetry & Stats -->
+        <section class="card">
+          <div class="card-header">
+            <h2>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              بيانات اللوب المحددة
+            </h2>
+          </div>
+
+          <table class="telemetry-table">
+            <tbody>
+              <tr>
+                <td>طول اللوب المحدد:</td>
+                <td id="statLoopDuration">0.000 s</td>
+              </tr>
+              <tr>
+                <td>عدد العينات (Samples):</td>
+                <td id="statLoopSamples">0 samples</td>
+              </tr>
+              <tr>
+                <td>نقطة البداية (Start):</td>
+                <td id="statStartSample">0</td>
+              </tr>
+              <tr>
+                <td>نقطة النهاية (End):</td>
+                <td id="statEndSample">0</td>
+              </tr>
+              <tr>
+                <td>التردد التقديري للأسطوانات:</td>
+                <td id="statEstFreq">-- Hz</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Export & Test Actions -->
+        <section class="card export-card">
+          <div class="card-header">
+            <h2>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              استخراج واختبار اللوب
+            </h2>
+          </div>
+
+          <button class="btn-export-wav" id="btnExportWav" title="تصدير ملف WAV نقي بجودة 16-bit جاهز لـ Unity">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            تصدير ملف WAV نظيف (16-bit)
+          </button>
+
+          <button class="btn-send-sim" id="btnSendToSim" title="نقل الصوت فورياً لمحاكي السيارة وتجربته بدعسة البنزين">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polygon points="10 8 16 12 10 16 10 8"/>
+            </svg>
+            🏎️ إرسال للمحاكي وتجربته بالدعسة
+          </button>
+
+          <div class="status-toast" id="statusToast"></div>
+        </section>
+
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- Studio Audio Core Logic -->
+  <script>
+    /**
+     * Pro Engine Audio Loop Trimmer & Anti-Click Studio Engine
+     */
+    class EngineAudioTrimmerStudio {
+      constructor() {
+        this.ctx = null;
+        this.rawBuffer = null;
+        this.processedLoopBuffer = null;
+        this.sourceNode = null;
+        this.isPlaying = false;
+        
+        // Loop range in normalized seconds
+        this.startTime = 0.0;
+        this.endTime = 1.0;
+        
+        // Viewport Zoom & Scroll (in ratio 0..1 of total duration)
+        this.viewStart = 0.0;
+        this.viewEnd = 1.0;
+        
+        // Pitch modulation
+        this.currentPitch = 1.0;
+        
+        // Settings
+        this.settings = {
+          snapZeroCrossing: true,
+          equalPowerCrossfade: true,
+          crossfadeMs: 40,
+          microFade: true,
+          removeDCOffset: true
+        };
+
+        // Dragging states
+        this.activeDrag = null; // 'start' | 'end' | 'region' | 'view'
+        this.dragStartX = 0;
+        this.dragInitialStart = 0;
+        this.dragInitialEnd = 0;
+        this.dragInitialViewStart = 0;
+        this.dragInitialViewEnd = 0;
+
+        // Visual loop cycle ping tracker
+        this.loopTimer = null;
+        this.playheadAnimFrame = null;
+        this.playbackStartCtxTime = 0;
+
+        // Elements
+        this.initDOMElements();
+        this.setupEventListeners();
+        this.initCanvases();
+      }
+
+      initAudioContext() {
+        if (!this.ctx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContextClass();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      initDOMElements() {
+        this.dropzone = document.getElementById('audioDropzone');
+        this.fileInput = document.getElementById('fileInput');
+        this.btnGenerateDemo = document.getElementById('btnGenerateDemo');
+        
+        this.waveformStage = document.getElementById('waveformStage');
+        this.waveformCanvas = document.getElementById('waveformCanvas');
+        this.minimapWrapper = document.getElementById('minimapWrapper');
+        this.minimapCanvas = document.getElementById('minimapCanvas');
+        this.minimapViewWindow = document.getElementById('minimapViewWindow');
+        
+        this.loopOverlay = document.getElementById('loopOverlay');
+        this.handleStart = document.getElementById('handleStart');
+        this.handleEnd = document.getElementById('handleEnd');
+        this.startPosLabel = document.getElementById('startPosLabel');
+        this.endPosLabel = document.getElementById('endPosLabel');
+        this.playheadLine = document.getElementById('playheadLine');
+        this.snapIndicator = document.getElementById('snapIndicator');
+        
+        this.btnPlayLoop = document.getElementById('btnPlayLoop');
+        this.playIcon = document.getElementById('playIcon');
+        this.playBtnText = document.getElementById('playBtnText');
+        this.pingLed = document.getElementById('pingLed');
+        
+        this.rpmPitchSlider = document.getElementById('rpmPitchSlider');
+        this.rpmValueDisplay = document.getElementById('rpmValueDisplay');
+        this.pitchValueDisplay = document.getElementById('pitchValueDisplay');
+        
+        this.toggleZeroCross = document.getElementById('toggleZeroCross');
+        this.toggleCrossfade = document.getElementById('toggleCrossfade');
+        this.crossfadeSlider = document.getElementById('crossfadeSlider');
+        this.crossfadeValDisplay = document.getElementById('crossfadeValDisplay');
+        this.toggleMicroFade = document.getElementById('toggleMicroFade');
+        this.toggleDCOffset = document.getElementById('toggleDCOffset');
+
+        this.btnZoomIn = document.getElementById('btnZoomIn');
+        this.btnZoomOut = document.getElementById('btnZoomOut');
+        this.btnZoomFit = document.getElementById('btnZoomFit');
+        this.btnZoomSelection = document.getElementById('btnZoomSelection');
+
+        this.metaFileName = document.getElementById('metaFileName');
+        this.metaDuration = document.getElementById('metaDuration');
+        this.metaSampleRate = document.getElementById('metaSampleRate');
+        this.metaChannels = document.getElementById('metaChannels');
+
+        this.statLoopDuration = document.getElementById('statLoopDuration');
+        this.statLoopSamples = document.getElementById('statLoopSamples');
+        this.statStartSample = document.getElementById('statStartSample');
+        this.statEndSample = document.getElementById('statEndSample');
+        this.statEstFreq = document.getElementById('statEstFreq');
+
+        this.btnExportWav = document.getElementById('btnExportWav');
+        this.btnSendToSim = document.getElementById('btnSendToSim');
+        this.statusToast = document.getElementById('statusToast');
+      }
+
+      initCanvases() {
+        const dpr = window.devicePixelRatio || 1;
+        
+        // Waveform Canvas
+        const stageRect = this.waveformStage.getBoundingClientRect();
+        this.waveformCanvas.width = (stageRect.width || 800) * dpr;
+        this.waveformCanvas.height = (stageRect.height || 220) * dpr;
+        this.wCtx = this.waveformCanvas.getContext('2d');
+        this.wCtx.scale(dpr, dpr);
+
+        // Minimap Canvas
+        const miniRect = this.minimapWrapper.getBoundingClientRect();
+        this.minimapCanvas.width = (miniRect.width || 800) * dpr;
+        this.minimapCanvas.height = (miniRect.height || 44) * dpr;
+        this.mCtx = this.minimapCanvas.getContext('2d');
+        this.mCtx.scale(dpr, dpr);
+      }
+
+      setupEventListeners() {
+        window.addEventListener('resize', () => {
+          this.initCanvases();
+          this.renderMinimap();
+          this.renderMainWaveform();
+          this.updateHandlesUI();
+        });
+
+        // File drop & select
+        this.dropzone.addEventListener('click', (e) => {
+          if (e.target !== this.btnGenerateDemo && !this.btnGenerateDemo.contains(e.target)) {
+            this.fileInput.click();
+          }
+        });
+
+        this.fileInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files[0]) {
+            this.loadFile(e.target.files[0]);
+          }
+        });
+
+        this.dropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          this.dropzone.classList.add('drag-active');
+        });
+
+        this.dropzone.addEventListener('dragleave', () => {
+          this.dropzone.classList.remove('drag-active');
+        });
+
+        this.dropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          this.dropzone.classList.remove('drag-active');
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            this.loadFile(e.dataTransfer.files[0]);
+          }
+        });
+
+        // Generate synthetic engine audio sample button
+        this.btnGenerateDemo.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.generateDemoEngineSound();
+        });
+
+        // Dragging handles and region
+        this.handleStart.addEventListener('mousedown', (e) => this.onDragStart(e, 'start'));
+        this.handleEnd.addEventListener('mousedown', (e) => this.onDragStart(e, 'end'));
+        this.loopOverlay.addEventListener('mousedown', (e) => this.onDragStart(e, 'region'));
+        
+        // Minimap drag/click to scrub viewport
+        this.minimapWrapper.addEventListener('mousedown', (e) => this.onMinimapMouseDown(e));
+
+        window.addEventListener('mousemove', (e) => this.onMouseMove(e));
+        window.addEventListener('mouseup', () => this.onMouseUp());
+
+        // Keyboard shortcuts
+        window.addEventListener('keydown', (e) => {
+          if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+          if (e.code === 'Space') {
+            e.preventDefault();
+            this.togglePlayLoop();
+          }
+        });
+
+        // Transport
+        this.btnPlayLoop.addEventListener('click', () => this.togglePlayLoop());
+
+        // RPM Pitch Slider
+        this.rpmPitchSlider.addEventListener('input', (e) => {
+          const pitch = parseFloat(e.target.value);
+          this.setPitch(pitch);
+        });
+
+        // Presets
+        document.querySelectorAll('.btn-rpm-preset').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.btn-rpm-preset').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const pitch = parseFloat(btn.dataset.pitch);
+            this.rpmPitchSlider.value = pitch;
+            this.setPitch(pitch);
+          });
+        });
+
+        // Toggles
+        this.toggleZeroCross.addEventListener('change', (e) => {
+          this.settings.snapZeroCrossing = e.target.checked;
+          if (this.settings.snapZeroCrossing) this.applyZeroCrossingSnap();
+          this.rebuildLoopBuffer();
+        });
+
+        this.toggleCrossfade.addEventListener('change', (e) => {
+          this.settings.equalPowerCrossfade = e.target.checked;
+          this.rebuildLoopBuffer();
+        });
+
+        this.crossfadeSlider.addEventListener('input', (e) => {
+          this.settings.crossfadeMs = parseInt(e.target.value, 10);
+          this.crossfadeValDisplay.textContent = `${this.settings.crossfadeMs} ms`;
+          this.rebuildLoopBuffer();
+        });
+
+        this.toggleMicroFade.addEventListener('change', (e) => {
+          this.settings.microFade = e.target.checked;
+          this.rebuildLoopBuffer();
+        });
+
+        this.toggleDCOffset.addEventListener('change', (e) => {
+          this.settings.removeDCOffset = e.target.checked;
+          if (this.rawBuffer && this.settings.removeDCOffset) {
+            this.cleanDCOffset(this.rawBuffer);
+            this.renderMinimap();
+            this.renderMainWaveform();
+          }
+          this.rebuildLoopBuffer();
+        });
+
+        // Zoom buttons
+        this.btnZoomIn.addEventListener('click', () => this.zoom(1.5));
+        this.btnZoomOut.addEventListener('click', () => this.zoom(1 / 1.5));
+        this.btnZoomFit.addEventListener('click', () => {
+          this.viewStart = 0;
+          this.viewEnd = 1;
+          this.renderMainWaveform();
+          this.updateMinimapViewport();
+          this.updateHandlesUI();
+        });
+        this.btnZoomSelection.addEventListener('click', () => {
+          if (this.rawBuffer) {
+            const pad = (this.endTime - this.startTime) * 0.15;
+            this.viewStart = Math.max(0, this.startTime - pad);
+            this.viewEnd = Math.min(this.rawBuffer.duration, this.endTime + pad);
+            this.renderMainWaveform();
+            this.updateMinimapViewport();
+            this.updateHandlesUI();
+          }
+        });
+
+        // Export Actions
+        this.btnExportWav.addEventListener('click', () => this.exportCleanWAV());
+        this.btnSendToSim.addEventListener('click', () => this.sendToCarSimulator());
+      }
+
+      setPitch(pitch) {
+        this.currentPitch = pitch;
+        this.pitchValueDisplay.textContent = `${pitch.toFixed(2)}x`;
+        const estRpm = Math.round(pitch * 3000);
+        this.rpmValueDisplay.textContent = `${estRpm.toLocaleString()} RPM`;
+        
+        if (this.sourceNode && this.sourceNode.playbackRate) {
+          this.sourceNode.playbackRate.setValueAtTime(pitch, this.ctx.currentTime);
+        }
+      }
+
+      async loadFile(file) {
+        this.initAudioContext();
+        this.showToast(`جاري فك تشفير ${file.name}...`, 'warn');
+        try {
+          const arrayBuf = await file.arrayBuffer();
+          const decoded = await this.ctx.decodeAudioData(arrayBuf);
+          this.setAudioBuffer(decoded, file.name);
+          this.showToast(`تم تحميل ${file.name} بنجاح ✓`, 'success');
+        } catch (err) {
+          console.error(err);
+          this.showToast(`تعذر قراءة الملف: ${err.message}`, 'warn');
+        }
+      }
+
+      // Generate a realistic 4-cylinder engine loop sound procedurally if the user has no file
+      generateDemoEngineSound() {
+        this.initAudioContext();
+        const sampleRate = 44100;
+        const duration = 2.5; // seconds
+        const numSamples = Math.floor(sampleRate * duration);
+        const buffer = this.ctx.createBuffer(2, numSamples, sampleRate);
+        const baseFreq = 35; // ~2100 RPM rumble (4-cylinder: 2 power strokes per rev)
+
+        for (let ch = 0; ch < 2; ch++) {
+          const data = buffer.getChannelData(ch);
+          let phase = ch * 0.2; // slight stereo spread
+          for (let i = 0; i < numSamples; i++) {
+            const t = i / sampleRate;
+            // Engine harmonics (cylinder pulses)
+            const h1 = Math.sin(2 * Math.PI * baseFreq * t + phase) * 0.45;
+            const h2 = Math.sin(2 * Math.PI * (baseFreq * 2) * t + phase) * 0.28;
+            const h3 = Math.sin(2 * Math.PI * (baseFreq * 3) * t + phase) * 0.15;
+            const h4 = Math.sin(2 * Math.PI * (baseFreq * 4) * t + phase) * 0.10;
+            // Intake suction & combustion rumble noise
+            const noise = (Math.random() * 2 - 1) * 0.08 * (0.5 + 0.5 * Math.sin(2 * Math.PI * baseFreq * t));
+            data[i] = (h1 + h2 + h3 + h4 + noise) * 0.95;
+          }
+        }
+
+        this.setAudioBuffer(buffer, 'Demo-Engine-V4-Rumble.wav');
+        this.showToast('تم توليد صوت محرك تجريبي بنجاح! يمكنك الآن تجربة القص وإلغاء الطقطقة', 'success');
+      }
+
+      setAudioBuffer(buffer, filename) {
+        this.rawBuffer = buffer;
+        if (this.settings.removeDCOffset) {
+          this.cleanDCOffset(this.rawBuffer);
+        }
+
+        this.metaFileName.textContent = filename || 'Engine_Loop.wav';
+        this.metaDuration.textContent = `${buffer.duration.toFixed(3)}s`;
+        this.metaSampleRate.textContent = `${buffer.sampleRate} Hz`;
+        this.metaChannels.textContent = buffer.numberOfChannels === 1 ? 'Mono' : 'Stereo';
+
+        // Set initial loop window (e.g. from 0.1s to 0.7s, or 40% of duration)
+        const dur = buffer.duration;
+        this.startTime = Math.min(0.1, dur * 0.1);
+        this.endTime = Math.min(dur * 0.8, this.startTime + Math.min(1.2, dur * 0.6));
+        
+        this.viewStart = 0.0;
+        this.viewEnd = dur;
+
+        if (this.settings.snapZeroCrossing) {
+          this.applyZeroCrossingSnap();
+        }
+
+        this.renderMinimap();
+        this.renderMainWaveform();
+        this.updateHandlesUI();
+        this.updateTelemetryStats();
+        this.rebuildLoopBuffer();
+      }
+
+      // Filter DC offset
+      cleanDCOffset(buffer) {
+        for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+          const data = buffer.getChannelData(ch);
+          let sum = 0;
+          for (let i = 0; i < data.length; i++) sum += data[i];
+          const mean = sum / data.length;
+          if (Math.abs(mean) > 0.0001) {
+            for (let i = 0; i < data.length; i++) data[i] -= mean;
+          }
+        }
+      }
+
+      // Snap handles to zero-crossing
+      applyZeroCrossingSnap() {
+        if (!this.rawBuffer) return;
+        const sr = this.rawBuffer.sampleRate;
+        const chData = this.rawBuffer.getChannelData(0);
+        
+        const startIdx = Math.round(this.startTime * sr);
+        const endIdx = Math.round(this.endTime * sr);
+
+        const snappedStart = this.findNearestRisingZero(chData, startIdx);
+        const snappedEnd = this.findNearestRisingZero(chData, endIdx);
+
+        this.startTime = snappedStart / sr;
+        this.endTime = snappedEnd / sr;
+
+        this.showSnapIndicator();
+      }
+
+      findNearestRisingZero(data, centerIdx, searchRadius = 450) {
+        const minIdx = Math.max(1, centerIdx - searchRadius);
+        const maxIdx = Math.min(data.length - 2, centerIdx + searchRadius);
+        
+        let bestIdx = centerIdx;
+        let minDistance = Infinity;
+
+        for (let i = minIdx; i <= maxIdx; i++) {
+          // Rising zero crossing: sample[i] <= 0 and sample[i+1] > 0
+          if (data[i] <= 0 && data[i + 1] > 0) {
+            const dist = Math.abs(i - centerIdx);
+            if (dist < minDistance) {
+              minDistance = dist;
+              bestIdx = i;
+            }
+          }
+        }
+
+        // Fallback to any crossing if rising wasn't found in radius
+        if (minDistance === Infinity) {
+          for (let i = minIdx; i <= maxIdx; i++) {
+            if ((data[i] <= 0 && data[i + 1] >= 0) || (data[i] >= 0 && data[i + 1] <= 0)) {
+              const dist = Math.abs(i - centerIdx);
+              if (dist < minDistance) {
+                minDistance = dist;
+                bestIdx = i;
+              }
+            }
+          }
+        }
+
+        return bestIdx;
+      }
+
+      showSnapIndicator() {
+        this.snapIndicator.classList.add('show');
+        clearTimeout(this.snapIndicatorTimer);
+        this.snapIndicatorTimer = setTimeout(() => {
+          this.snapIndicator.classList.remove('show');
+        }, 1200);
+      }
+
+      // Rebuild the click-free loop buffer in real time
+      rebuildLoopBuffer() {
+        if (!this.rawBuffer) return;
+        const sr = this.rawBuffer.sampleRate;
+        const numChannels = this.rawBuffer.numberOfChannels;
+
+        const startSample = Math.max(0, Math.floor(this.startTime * sr));
+        const endSample = Math.min(this.rawBuffer.length, Math.floor(this.endTime * sr));
+        const rawLength = endSample - startSample;
+
+        if (rawLength <= 100) return;
+
+        let crossfadeSamples = 0;
+        if (this.settings.equalPowerCrossfade) {
+          crossfadeSamples = Math.floor((this.settings.crossfadeMs / 1000) * sr);
+          // Limit crossfade to 30% of loop length
+          crossfadeSamples = Math.min(crossfadeSamples, Math.floor(rawLength * 0.3));
+        }
+
+        const outLength = rawLength - crossfadeSamples;
+        const loopBuffer = this.ctx.createBuffer(numChannels, outLength, sr);
+
+        for (let ch = 0; ch < numChannels; ch++) {
+          const rawData = this.rawBuffer.getChannelData(ch);
+          const outData = loopBuffer.getChannelData(ch);
+
+          if (crossfadeSamples > 0) {
+            // Equal Power Crossfade: cos & sin curves
+            for (let i = 0; i < crossfadeSamples; i++) {
+              const t = i / crossfadeSamples;
+              const gainTail = Math.cos(t * Math.PI * 0.5); // End portion fading out
+              const gainHead = Math.sin(t * Math.PI * 0.5); // Start portion fading in
+              
+              const tailSample = rawData[startSample + outLength + i];
+              const headSample = rawData[startSample + i];
+
+              outData[i] = (tailSample * gainTail) + (headSample * gainHead);
+            }
+
+            // Remainder of loop body
+            for (let i = crossfadeSamples; i < outLength; i++) {
+              outData[i] = rawData[startSample + i];
+            }
+          } else {
+            // Raw slice
+            for (let i = 0; i < outLength; i++) {
+              outData[i] = rawData[startSample + i];
+            }
+          }
+
+          // Micro-fade (1.5ms) at extreme boundary to eliminate absolute edge spikes
+          if (this.settings.microFade) {
+            const microSamples = Math.min(Math.floor(0.0015 * sr), Math.floor(outLength * 0.05));
+            for (let i = 0; i < microSamples; i++) {
+              const ramp = 0.5 * (1 - Math.cos(Math.PI * i / microSamples));
+              outData[i] *= ramp;
+              outData[outLength - 1 - i] *= ramp;
+            }
+          }
+        }
+
+        this.processedLoopBuffer = loopBuffer;
+
+        // If currently playing, hot-swap the buffer
+        if (this.isPlaying && this.sourceNode) {
+          const curPlaybackRate = this.sourceNode.playbackRate.value;
+          this.sourceNode.stop();
+          this.sourceNode.disconnect();
+          this.startLoopPlayback(curPlaybackRate);
+        }
+
+        this.updateTelemetryStats();
+      }
+
+      // Playback Controls
+      togglePlayLoop() {
+        if (!this.rawBuffer) {
+          this.showToast('يرجى تحميل ملف صوتي أولاً', 'warn');
+          return;
+        }
+
+        if (this.isPlaying) {
+          this.stopLoopPlayback();
+        } else {
+          this.initAudioContext();
+          this.rebuildLoopBuffer();
+          this.startLoopPlayback(this.currentPitch);
+        }
+      }
+
+      startLoopPlayback(pitch = 1.0) {
+        if (!this.processedLoopBuffer) return;
+
+        this.sourceNode = this.ctx.createBufferSource();
+        this.sourceNode.buffer = this.processedLoopBuffer;
+        this.sourceNode.loop = true;
+        this.sourceNode.playbackRate.setValueAtTime(pitch, this.ctx.currentTime);
+        this.sourceNode.connect(this.ctx.destination);
+        this.sourceNode.start(0);
+
+        this.isPlaying = true;
+        this.playbackStartCtxTime = this.ctx.currentTime;
+
+        this.btnPlayLoop.classList.add('playing');
+        this.playBtnText.textContent = '⏹ إيقاف اللوب';
+        this.playIcon.innerHTML = '<rect x="6" y="6" width="12" height="12"/>';
+        this.playheadLine.style.display = 'block';
+
+        this.startLoopPingAnimation();
+        this.trackPlayhead();
+      }
+
+      stopLoopPlayback() {
+        if (this.sourceNode) {
+          try {
+            this.sourceNode.stop();
+            this.sourceNode.disconnect();
+          } catch(e){}
+          this.sourceNode = null;
+        }
+
+        this.isPlaying = false;
+        this.btnPlayLoop.classList.remove('playing');
+        this.playBtnText.textContent = 'تشغيل اللوب المباشر';
+        this.playIcon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+        this.playheadLine.style.display = 'none';
+
+        cancelAnimationFrame(this.playheadAnimFrame);
+        clearTimeout(this.loopTimer);
+      }
+
+      // Visual LED Ping that flashes on every loop wrap
+      startLoopPingAnimation() {
+        if (!this.isPlaying || !this.processedLoopBuffer) return;
+        
+        // Trigger ping flash
+        this.pingLed.classList.add('flash');
+        setTimeout(() => this.pingLed.classList.remove('flash'), 100);
+
+        // Calculate next period
+        const loopDurationSec = this.processedLoopBuffer.duration / Math.max(0.1, this.currentPitch);
+        this.loopTimer = setTimeout(() => {
+          this.startLoopPingAnimation();
+        }, loopDurationSec * 1000);
+      }
+
+      // Realtime Playhead Position tracker
+      trackPlayhead() {
+        if (!this.isPlaying || !this.processedLoopBuffer) return;
+
+        const loopDur = this.processedLoopBuffer.duration;
+        const elapsed = (this.ctx.currentTime - this.playbackStartCtxTime) * this.currentPitch;
+        const modTime = elapsed % loopDur;
+        const currentAbsoluteTime = this.startTime + modTime;
+
+        // Position on main canvas
+        const viewDur = this.viewEnd - this.viewStart;
+        if (currentAbsoluteTime >= this.viewStart && currentAbsoluteTime <= this.viewEnd) {
+          const ratio = (currentAbsoluteTime - this.viewStart) / viewDur;
+          this.playheadLine.style.display = 'block';
+          this.playheadLine.style.left = `${ratio * 100}%`;
+        } else {
+          this.playheadLine.style.display = 'none';
+        }
+
+        this.playheadAnimFrame = requestAnimationFrame(() => this.trackPlayhead());
+      }
+
+      // Render Overview Minimap
+      renderMinimap() {
+        if (!this.rawBuffer) return;
+        const w = this.minimapCanvas.width / (window.devicePixelRatio || 1);
+        const h = this.minimapCanvas.height / (window.devicePixelRatio || 1);
+        const ctx = this.mCtx;
+
+        ctx.fillStyle = '#0b0c12';
+        ctx.fillRect(0, 0, w, h);
+
+        const data = this.rawBuffer.getChannelData(0);
+        const step = Math.ceil(data.length / w);
+        const amp = h / 2;
+
+        ctx.fillStyle = '#2a2d3d';
+        for (let i = 0; i < w; i++) {
+          let min = 1.0;
+          let max = -1.0;
+          const start = i * step;
+          const end = Math.min(start + step, data.length);
+          for (let j = start; j < end; j++) {
+            const datum = data[j];
+            if (datum < min) min = datum;
+            if (datum > max) max = datum;
+          }
+          const barH = Math.max(1, (max - min) * amp);
+          ctx.fillRect(i, (h - barH) / 2, 1, barH);
+        }
+
+        this.updateMinimapViewport();
+      }
+
+      updateMinimapViewport() {
+        if (!this.rawBuffer) return;
+        const total = this.rawBuffer.duration;
+        const leftRatio = this.viewStart / total;
+        const widthRatio = (this.viewEnd - this.viewStart) / total;
+
+        this.minimapViewWindow.style.left = `${leftRatio * 100}%`;
+        this.minimapViewWindow.style.width = `${widthRatio * 100}%`;
+      }
+
+      // Render Main Zoomable Waveform
+      renderMainWaveform() {
+        if (!this.rawBuffer) return;
+        const w = this.waveformCanvas.width / (window.devicePixelRatio || 1);
+        const h = this.waveformCanvas.height / (window.devicePixelRatio || 1);
+        const ctx = this.wCtx;
+
+        // Background
+        ctx.fillStyle = '#08090e';
+        ctx.fillRect(0, 0, w, h);
+
+        // Center 0V line & grid
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        // Zero axis
+        ctx.moveTo(0, h / 2);
+        ctx.lineTo(w, h / 2);
+        // +0.5 and -0.5
+        ctx.moveTo(0, h * 0.25);
+        ctx.lineTo(w, h * 0.25);
+        ctx.moveTo(0, h * 0.75);
+        ctx.lineTo(w, h * 0.75);
+        ctx.stroke();
+
+        // Sample range inside viewport
+        const sr = this.rawBuffer.sampleRate;
+        const startSample = Math.floor(this.viewStart * sr);
+        const endSample = Math.min(this.rawBuffer.length, Math.ceil(this.viewEnd * sr));
+        const viewSamples = endSample - startSample;
+        if (viewSamples <= 0) return;
+
+        const data = this.rawBuffer.getChannelData(0);
+        const amp = (h / 2) * 0.92;
+        const centerY = h / 2;
+
+        // If zoomed in deep (under 1200 samples on screen), draw continuous smooth curve + dots
+        if (viewSamples < 1200) {
+          ctx.strokeStyle = '#00f5c4';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+
+          for (let i = 0; i < viewSamples; i++) {
+            const sIdx = startSample + i;
+            const x = (i / viewSamples) * w;
+            const y = centerY - data[sIdx] * amp;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+
+          // Draw zero-crossing dots
+          for (let i = 0; i < viewSamples - 1; i++) {
+            const sIdx = startSample + i;
+            if (data[sIdx] <= 0 && data[sIdx + 1] > 0) {
+              const x = (i / viewSamples) * w;
+              ctx.fillStyle = '#ff7b00';
+              ctx.beginPath();
+              ctx.arc(x, centerY, 3, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        } else {
+          // Overview min/max bars with subtle gradient
+          const step = viewSamples / w;
+          const gradient = ctx.createLinearGradient(0, 0, 0, h);
+          gradient.addColorStop(0, '#00f5c4');
+          gradient.addColorStop(0.5, '#00755e');
+          gradient.addColorStop(1, '#00f5c4');
+          ctx.fillStyle = gradient;
+
+          for (let i = 0; i < w; i++) {
+            let min = 1.0;
+            let max = -1.0;
+            const sStart = Math.floor(startSample + i * step);
+            const sEnd = Math.min(startSample + Math.floor((i + 1) * step), data.length);
+
+            for (let j = sStart; j < sEnd; j++) {
+              const datum = data[j];
+              if (datum < min) min = datum;
+              if (datum > max) max = datum;
+            }
+
+            const yTop = centerY - max * amp;
+            const yBottom = centerY - min * amp;
+            const barH = Math.max(1, yBottom - yTop);
+            ctx.fillRect(i, yTop, 1, barH);
+          }
+        }
+      }
+
+      // Update Handle and Overlay positions in DOM
+      updateHandlesUI() {
+        if (!this.rawBuffer) return;
+        const viewDur = this.viewEnd - this.viewStart;
+        if (viewDur <= 0) return;
+
+        const startRatio = (this.startTime - this.viewStart) / viewDur;
+        const endRatio = (this.endTime - this.viewStart) / viewDur;
+
+        const leftPct = Math.max(0, Math.min(100, startRatio * 100));
+        const rightPct = Math.max(0, Math.min(100, endRatio * 100));
+
+        this.handleStart.style.left = `${leftPct}%`;
+        this.handleEnd.style.left = `${rightPct}%`;
+
+        this.loopOverlay.style.left = `${Math.min(leftPct, rightPct)}%`;
+        this.loopOverlay.style.width = `${Math.abs(rightPct - leftPct)}%`;
+
+        this.startPosLabel.textContent = `${this.startTime.toFixed(3)}s`;
+        this.endPosLabel.textContent = `${this.endTime.toFixed(3)}s`;
+      }
+
+      updateTelemetryStats() {
+        if (!this.rawBuffer) return;
+        const sr = this.rawBuffer.sampleRate;
+        const loopDur = Math.max(0, this.endTime - this.startTime);
+        const samples = Math.round(loopDur * sr);
+
+        this.statLoopDuration.textContent = `${loopDur.toFixed(4)} s`;
+        this.statLoopSamples.textContent = `${samples.toLocaleString()} smp`;
+        this.statStartSample.textContent = Math.round(this.startTime * sr).toLocaleString();
+        this.statEndSample.textContent = Math.round(this.endTime * sr).toLocaleString();
+
+        // Engine cylinder frequency estimate
+        if (loopDur > 0.005) {
+          const freq = (1 / loopDur).toFixed(1);
+          this.statEstFreq.textContent = `${freq} Hz (~${Math.round(freq * 60)} RPM)`;
+        } else {
+          this.statEstFreq.textContent = '-- Hz';
+        }
+      }
+
+      // Drag Handlers
+      onDragStart(e, target) {
+        if (!this.rawBuffer) return;
+        e.preventDefault();
+        this.activeDrag = target;
+        this.dragStartX = e.clientX;
+        this.dragInitialStart = this.startTime;
+        this.dragInitialEnd = this.endTime;
+      }
+
+      onMinimapMouseDown(e) {
+        if (!this.rawBuffer) return;
+        const rect = this.minimapWrapper.getBoundingClientRect();
+        const ratio = (e.clientX - rect.left) / rect.width;
+        const targetTime = ratio * this.rawBuffer.duration;
+        const curWindowDur = this.viewEnd - this.viewStart;
+
+        this.viewStart = Math.max(0, targetTime - curWindowDur / 2);
+        this.viewEnd = Math.min(this.rawBuffer.duration, this.viewStart + curWindowDur);
+
+        this.renderMainWaveform();
+        this.updateMinimapViewport();
+        this.updateHandlesUI();
+      }
+
+      onMouseMove(e) {
+        if (!this.activeDrag || !this.rawBuffer) return;
+
+        const rect = this.waveformStage.getBoundingClientRect();
+        const deltaPixels = e.clientX - this.dragStartX;
+        const viewDur = this.viewEnd - this.viewStart;
+        const deltaTime = (deltaPixels / rect.width) * viewDur;
+
+        const totalDur = this.rawBuffer.duration;
+        const minLoopSpan = 0.02; // minimum 20ms loop
+
+        if (this.activeDrag === 'start') {
+          let newStart = Math.max(0, Math.min(this.dragInitialEnd - minLoopSpan, this.dragInitialStart + deltaTime));
+          this.startTime = newStart;
+          if (this.settings.snapZeroCrossing) {
+            const sr = this.rawBuffer.sampleRate;
+            const snapped = this.findNearestRisingZero(this.rawBuffer.getChannelData(0), Math.round(newStart * sr));
+            this.startTime = snapped / sr;
+            this.showSnapIndicator();
+          }
+        } else if (this.activeDrag === 'end') {
+          let newEnd = Math.min(totalDur, Math.max(this.dragInitialStart + minLoopSpan, this.dragInitialEnd + deltaTime));
+          this.endTime = newEnd;
+          if (this.settings.snapZeroCrossing) {
+            const sr = this.rawBuffer.sampleRate;
+            const snapped = this.findNearestRisingZero(this.rawBuffer.getChannelData(0), Math.round(newEnd * sr));
+            this.endTime = snapped / sr;
+            this.showSnapIndicator();
+          }
+        } else if (this.activeDrag === 'region') {
+          const regionSpan = this.dragInitialEnd - this.dragInitialStart;
+          let newStart = this.dragInitialStart + deltaTime;
+          let newEnd = this.dragInitialEnd + deltaTime;
+
+          if (newStart < 0) {
+            newStart = 0;
+            newEnd = regionSpan;
+          }
+          if (newEnd > totalDur) {
+            newEnd = totalDur;
+            newStart = totalDur - regionSpan;
+          }
+
+          this.startTime = newStart;
+          this.endTime = newEnd;
+        }
+
+        this.updateHandlesUI();
+        this.updateTelemetryStats();
+      }
+
+      onMouseUp() {
+        if (this.activeDrag) {
+          this.activeDrag = null;
+          this.rebuildLoopBuffer();
+        }
+      }
+
+      zoom(factor) {
+        if (!this.rawBuffer) return;
+        const curDur = this.viewEnd - this.viewStart;
+        const newDur = Math.max(0.01, Math.min(this.rawBuffer.duration, curDur / factor));
+        const center = (this.viewStart + this.viewEnd) / 2;
+
+        this.viewStart = Math.max(0, center - newDur / 2);
+        this.viewEnd = Math.min(this.rawBuffer.duration, this.viewStart + newDur);
+
+        if (this.viewStart === 0) {
+          this.viewEnd = Math.min(this.rawBuffer.duration, newDur);
+        } else if (this.viewEnd === this.rawBuffer.duration) {
+          this.viewStart = Math.max(0, this.rawBuffer.duration - newDur);
+        }
+
+        this.renderMainWaveform();
+        this.updateMinimapViewport();
+        this.updateHandlesUI();
+      }
+
+      // Clean 16-bit PCM WAV Exporter
+      exportCleanWAV() {
+        if (!this.rawBuffer) {
+          this.showToast('لا يوجد ملف صوتي لتصديره!', 'warn');
+          return;
+        }
+
+        this.rebuildLoopBuffer();
+        const bufferToExport = this.processedLoopBuffer;
+        if (!bufferToExport) return;
+
+        const pcmArrayBuffer = this.encodeWAV16Bit(bufferToExport);
+        const blob = new Blob([pcmArrayBuffer], { type: 'audio/wav' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        const baseName = (this.metaFileName.textContent || 'engine').replace(/\.[^/.]+$/, "");
+        a.download = `${baseName}_Clean_Loop.wav`;
+        a.click();
+
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        this.showToast('تم تصدير ملف WAV نقي ومعد للوب بنجاح ✓', 'success');
+      }
+
+      // Transfer trimmed loop to Car Audio Simulator (index.html)
+      sendToCarSimulator() {
+        if (!this.rawBuffer) {
+          this.showToast('لا يوجد ملف صوتي لإرساله!', 'warn');
+          return;
+        }
+
+        this.rebuildLoopBuffer();
+        const bufferToExport = this.processedLoopBuffer;
+        if (!bufferToExport) return;
+
+        const pcmArrayBuffer = this.encodeWAV16Bit(bufferToExport);
+        
+        // Convert to base64 for sessionStorage handover
+        const bytes = new Uint8Array(pcmArrayBuffer);
+        let binary = '';
+        const chunk = 8192;
+        for (let i = 0; i < bytes.length; i += chunk) {
+          binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+        }
+        const b64 = btoa(binary);
+
+        try {
+          sessionStorage.setItem('trimmedEngineAudio', b64);
+          sessionStorage.setItem('trimmedEngineName', this.metaFileName.textContent || 'Engine_Loop.wav');
+          this.showToast('تم حفظ اللوب! جاري فتح محاكي السيارة...', 'success');
+          
+          setTimeout(() => {
+            window.location.href = 'index.html?loadTrimmed=1';
+          }, 600);
+        } catch(e) {
+          this.showToast('حجم الملف كبير جداً للتخزين المؤقت، يرجى استخدام تحميل WAV العادي', 'warn');
+        }
+      }
+
+      // Canonical 16-bit PCM RIFF/WAVE Encoder
+      encodeWAV16Bit(audioBuffer) {
+        const numChannels = audioBuffer.numberOfChannels;
+        const sampleRate = audioBuffer.sampleRate;
+        const numSamples = audioBuffer.length;
+        const bytesPerSample = 2; // 16-bit
+        const blockAlign = numChannels * bytesPerSample;
+        const dataByteLength = numSamples * blockAlign;
+        const bufferByteLength = 44 + dataByteLength;
+
+        const arrayBuffer = new ArrayBuffer(bufferByteLength);
+        const view = new DataView(arrayBuffer);
+
+        const writeString = (offset, str) => {
+          for (let i = 0; i < str.length; i++) {
+            view.setUint8(offset + i, str.charCodeAt(i));
+          }
+        };
+
+        // RIFF Header
+        writeString(0, 'RIFF');
+        view.setUint32(4, 36 + dataByteLength, true);
+        writeString(8, 'WAVE');
+
+        // fmt Chunk
+        writeString(12, 'fmt ');
+        view.setUint32(16, 16, true); // Subchunk1Size
+        view.setUint16(20, 1, true);  // AudioFormat (PCM = 1)
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * blockAlign, true); // ByteRate
+        view.setUint16(32, blockAlign, true);
+        view.setUint16(34, 16, true); // BitsPerSample
+
+        // data Chunk
+        writeString(36, 'data');
+        view.setUint32(40, dataByteLength, true);
+
+        // Interleave PCM 16-bit samples
+        let offset = 44;
+        const ch0 = audioBuffer.getChannelData(0);
+        const ch1 = numChannels > 1 ? audioBuffer.getChannelData(1) : null;
+
+        for (let i = 0; i < numSamples; i++) {
+          let s0 = Math.max(-1, Math.min(1, ch0[i]));
+          view.setInt16(offset, s0 < 0 ? s0 * 0x8000 : s0 * 0x7FFF, true);
+          offset += 2;
+
+          if (ch1) {
+            let s1 = Math.max(-1, Math.min(1, ch1[i]));
+            view.setInt16(offset, s1 < 0 ? s1 * 0x8000 : s1 * 0x7FFF, true);
+            offset += 2;
+          }
+        }
+
+        return arrayBuffer;
+      }
+
+      showToast(msg, type = 'success') {
+        this.statusToast.textContent = msg;
+        this.statusToast.className = `status-toast ${type}`;
+        clearTimeout(this.toastTimer);
+        this.toastTimer = setTimeout(() => {
+          this.statusToast.className = 'status-toast';
+        }, 3500);
+      }
+    }
+
+    // Launch studio when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      window.engineStudio = new EngineAudioTrimmerStudio();
+    });
+  </script>
+</body>
+</html>

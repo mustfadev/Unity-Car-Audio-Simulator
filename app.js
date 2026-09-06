@@ -953,6 +953,49 @@ public class CarEngineAudio : MonoBehaviour
     });
   });
 
+  // Check if user just sent a trimmed audio file from the Trimmer Studio
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasTrimmedFlag = urlParams.get('loadTrimmed');
+    const trimmedB64 = sessionStorage.getItem('trimmedEngineAudio');
+    const trimmedName = sessionStorage.getItem('trimmedEngineName') || 'Trimmed_Engine_Loop.wav';
+
+    if (hasTrimmedFlag && trimmedB64) {
+      sessionStorage.removeItem('trimmedEngineAudio');
+      sessionStorage.removeItem('trimmedEngineName');
+
+      // Convert base64 to Blob/File
+      const byteChars = atob(trimmedB64);
+      const byteNumbers = new Uint8Array(byteChars.length);
+      for (let i = 0; i < byteChars.length; i++) {
+        byteNumbers[i] = byteChars.charCodeAt(i);
+      }
+      const audioBlob = new Blob([byteNumbers], { type: 'audio/wav' });
+      const audioFile = new File([audioBlob], trimmedName, { type: 'audio/wav' });
+
+      audio.loadAudioFile('accel', audioFile).then(res => {
+        if (res.success) {
+          accelFileName.textContent = `✓ ${trimmedName} (${res.duration.toFixed(2)}s) [من المحرر]`;
+          slotAccel.classList.add('loaded');
+          loopStatusBadge.textContent = `Loop Ready: ${trimmedName}`;
+          tabCustomAudio.click();
+
+          // Auto start engine to let user test immediately!
+          toggleIgnition();
+
+          // Toast banner
+          const banner = document.createElement('div');
+          banner.style.cssText = 'position:fixed; top:24px; left:50%; transform:translateX(-50%); background:#00f5c4; color:#000; font-weight:bold; font-family:var(--font-arabic, sans-serif); padding:14px 26px; border-radius:12px; box-shadow:0 0 30px rgba(0,245,196,0.6); z-index:9999; direction:rtl;';
+          banner.textContent = '✓ تم استيراد صوت المحرك المقصوص بنجاح! اضغط W أو الدعسة لتجربته مع الـ RPM.';
+          document.body.appendChild(banner);
+          setTimeout(() => banner.remove(), 4500);
+        }
+      });
+    }
+  } catch(e) {
+    console.warn("Could not load trimmed audio handed over from studio:", e);
+  }
+
   // Start Animation Loop
   requestAnimationFrame(physicsLoop);
 });
