@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loopPlaying: "Loop: CONTINUOUS REPEAT",
       pedalTitle: "Interactive Gas Pedal",
       pedalHint: "Hold <b>W</b>, <b>↑</b> or Click & Drag",
-      dropHint: "📁 Drag & Drop any <b>MP3</b> or <b>WAV</b> file directly here to test!",
+      dropHint: " Drag & Drop any <b>MP3</b> or <b>WAV</b> file directly here to test!",
       pedalPress: "Click or Hold W to Rev",
       preciseThrottle: "Throttle Level Slider:",
       modeNeutral: "Neutral Revving",
